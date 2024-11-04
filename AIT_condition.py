@@ -13,27 +13,12 @@ def AIT_test(data, Z, num_W_id, **params):
     verbose = params.get('verbose', False)
     method = params.get('method', 'KI')
     relation = params.get('relation', 'nonlinear')
-    # given_True_A = params.get('given_True_A', False)
-    # given_pre_A = params.get('given_pre_A', False)
-    # if given_True_A and given_pre_A:
-    #     raise ValueError ('cannot given_True_A and given_pre_A at the same time')
 
     indexs = list(data.columns)
     if 'Treatment' not in indexs or 'Outcome' not in indexs:
         print('Please ensure the inpure is the variable of data!')
         exit(-1)
 
-    # if given_True_A:
-    #     pre_Z = f'residual_{Z}'
-    #     A = data["A"].values.reshape(-1, 1)
-    #     Z_data = data[pre_Z].values.reshape(-1, 1)
-    #     W_data = data.filter(like='W').values  # 动态获取所有以 'W' 开头的列
-    # elif given_pre_A:
-    #     pre_A = f'pre_A_{Z}'
-    #     pre_Z = f'residual_{Z}'
-    #     A = data[pre_A].values.reshape(-1, 1)
-    #     Z_data = data[pre_Z].values.reshape(-1, 1)
-    #     W_data = data.filter(like='W').values  # 动态获取所有以 'W' 开头的列
     if relation == 'linear':
         # A, Z_data, W_data, hat_va = linear_get_A_with_W(data, Z)
         # A, Z_data, W_data, hat_va = GIN_get_A(data, Z)
