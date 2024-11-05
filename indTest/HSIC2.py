@@ -23,13 +23,12 @@ def test(x,y,alpha=0.05,**params):
 
     num_samples = lens
 
-    # myspectralobject = HSICSpectralTestObject(num_samples, kernelX=kernelX, kernelY=kernelY,
-    #                                       kernelX_use_median=False, kernelY_use_median=False,
-    #                                       rff=True, num_rfx=40, num_rfy=40, num_nullsims=1000)
-
     myspectralobject = HSICSpectralTestObject(num_samples, kernelX=kernelX, kernelY=kernelY,
-                                              kernelX_use_median=False, kernelY_use_median=False,
-                                              rff=True, num_rfx=40, num_rfy=40, num_nullsims=1000)
+                                          kernelX_use_median=False, kernelY_use_median=False,
+                                          rff=True, num_rfx=40, num_rfy=40, num_nullsims=1000)
+
+
+
 
     pvalue = myspectralobject.compute_pvalue(x, y)
 

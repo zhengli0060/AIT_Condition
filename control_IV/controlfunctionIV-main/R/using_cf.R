@@ -1,13 +1,18 @@
-# folder_path <- "E:\\testability_IV_JMLR\\control_IV\\controlfunctionIV-main\\R"
+# library("rstudioapi")
 #
+# # Source required R scripts
+# setwd(dirname(getActiveDocumentContext()$path))
+# folder_path = dirname(getActiveDocumentContext()$path)
 # # 获取文件夹中所有R脚本的文件名
 # file_list <- list.files(path = folder_path, pattern = "\\.R$", full.names = TRUE)
-#
+
 # lapply(file_list, source)
 library(readxl)
 library(Formula) # 加载Formula包
-source("E:\\testability_IV_JMLR\\control_IV\\controlfunctionIV-main\\R\\pretest.R")
-source("E:\\testability_IV_JMLR\\control_IV\\controlfunctionIV-main\\R\\cf.R")
+# source("E:\\testability_IV_JMLR\\control_IV\\controlfunctionIV-main\\R\\pretest.R")
+# source("E:\\testability_IV_JMLR\\control_IV\\controlfunctionIV-main\\R\\cf.R")
+# source("pretest.R")
+# source("cf.R")
 using_R_cf_with_W <- function(data, Z.id) {
 
   Y <- scale(data[,"Treatment"])
