@@ -8,7 +8,7 @@ library(readxl)
 library(Formula) # 加载Formula包
 source("E:\\testability_IV_JMLR\\control_IV\\controlfunctionIV-main\\R\\pretest.R")
 source("E:\\testability_IV_JMLR\\control_IV\\controlfunctionIV-main\\R\\cf.R")
-using_R_cf <- function(data, Z.id) {
+using_R_cf_with_W <- function(data, Z.id) {
 
   Y <- scale(data[,"Treatment"])
   D <- scale(data[,"Outcome"])

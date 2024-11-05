@@ -34,11 +34,11 @@ def test(x,y,alpha=0.05,**params):
     pvalue = myspectralobject.compute_pvalue(x, y)
 
     #print(pvalue)
-    if pvalue >alpha:
-        return True, pvalue
-    else:
-        return False, pvalue
-    #return pvalue
+    # if pvalue >alpha:
+    #     return True, pvalue
+    # else:
+    #     return False, pvalue
+    return pvalue
 
 def test2(x,y,alph=0.08):
     lens = len(x)
