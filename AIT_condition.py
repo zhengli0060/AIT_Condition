@@ -11,7 +11,6 @@ import indTest.HSIC2 as fasthsic
 def AIT_test(data, Z, num_W_id, **params):
     alpha = params.get('alpha', 10 / data.shape[0])
     verbose = params.get('verbose', False)
-    method = params.get('method', 'KI')
     relation = params.get('relation', 'nonlinear')
 
     indexs = list(data.columns)
@@ -27,40 +26,8 @@ def AIT_test(data, Z, num_W_id, **params):
         A, Z_data, W_data = cf(data, Z)
         # A, Z_data, W_data,hat_va = KIV_get_A(data, Z, rate)
 
-    if relation == 'linear':
-        if method == 'KI':
-            valid_Z, pValue_Z = KI(A, Z_data, alpha=alpha, verbose=verbose)
-            # if pValue_Z > alpha:
-            #     valid_W = []
-            #     pValue_W = []
-            #     for i in range(W_data.shape[1]):
-            #         valid_w, pValue_w = KI(A, W_data[:, i], alpha=alpha, verbose=verbose)
-            #         valid_W.append(valid_w)
-            #         pValue_W.append(pValue_w)
-            #     valid_W = np.array(valid_W)
-            #     pValue_W = np.array(pValue_W)
-            # else:
-            #     valid_W = valid_Z
-            #     pValue_W = pValue_Z
-        elif method == 'fastHSIC':
-            valid_Z, pValue_Z = fasthsic.test(A, Z_data, alpha=alpha, verbose=verbose)
-            # if pValue_Z > alpha:
-            #     valid_W = []
-            #     pValue_W = []
-            #     for i in range(W_data.shape[1]):
-            #         valid_w, pValue_w = fasthsic.test(A, W_data[:, i], alpha=alpha, verbose=verbose)
-            #         valid_W.append(valid_w)
-            #         pValue_W.append(pValue_w)
-            #     valid_W = np.array(valid_W)
-            #     pValue_W = np.array(pValue_W)
-            # else:
-            #     valid_W = valid_Z
-            #     pValue_W = pValue_Z
-        else:
-            raise ValueError('no such method')
 
-    else:
-        raise ValueError('no such method')
+    valid_Z, pValue_Z = fasthsic.test(A, Z_data, alpha=alpha, verbose=verbose)
 
     # if pValue_Z < alpha or np.any(pValue_W < alpha):
     if pValue_Z < alpha :
@@ -72,54 +39,6 @@ def AIT_test(data, Z, num_W_id, **params):
     # pValue_W=1
     return valid_IV, {'pValue_Z': pValue_Z}, A
 
-
-def getomega(df, X, Z):
-    cov_m = np.cov(df, rowvar=False)
-    col = list(df.columns)
-    Xlist = []
-    Zlist = []
-    for i in X:
-        t = col.index(i)
-        Xlist.append(t)
-    for i in Z:
-        t = col.index(i)
-        Zlist.append(t)
-    B = cov_m[Xlist]
-    B = B[:, Zlist]
-    A = B.T
-    u, s, v = np.linalg.svd(A)
-    lens = len(X)
-    omega = v.T[:, lens - 1]
-    omegalen = len(omega)
-    omega = omega.reshape(1, omegalen)
-
-    re = omega
-    re = re.reshape(-1)
-    re[1] = re[1] / re[0] * (-1)
-    re[2] = re[2] / re[0] * (-1)
-    re[0] = re[0] / re[0]
-
-    return re
-
-
-def GIN_get_A(df, Z):
-    omega = getomega(df, ['Outcome', 'Treatment', 'W'], [Z, 'W'])
-    beta = omega[1]
-    m = omega[2]
-
-    # 直接从 DataFrame 中提取数据列
-    X_data = df['Treatment'].values.reshape(-1, 1)
-    Y_data = df['Outcome'].values.reshape(-1, 1)
-    Z_data = df[Z].values.reshape(-1, 1)
-    W_data = df['W'].values.reshape(-1, 1)
-
-    # beta = 2
-    # m = 2
-    A = Y_data - beta * X_data - m * W_data
-
-    if len(A.shape) == 1: A = A.reshape(-1, 1)
-    hat_value = {'beta': beta, 'm': m}
-    return A, Z_data, W_data, hat_value
 
 
 
@@ -194,43 +113,7 @@ def linear_get_A_OLS(df, Z, num_W_id):
     hat_value = None  # 如果需要后续操作，可以在这里进一步处理 hat_value
     return A.reshape(-1, 1), Z_data, W_data, hat_value
 
-def KI(X, Y, **params):
-    alpha = params.get('alpha', 10 / X.shape[0])
-    verbose = params.get('verbose', False)
 
-    if len(X.shape) == 1:
-        lens = len(X)
-        X = X.reshape(lens, 1)
-        Y = Y.reshape(lens, 1)
-
-    data_CI = np.hstack((X, Y))
-    if verbose: print(f'data_CI.shape:{data_CI.shape}')
-    ki_obj = CIT(data_CI, "kci", est_width='manual', kwidthx=0.05, kwidthy=0.05)  # 创建 CIT 实例
-    pValua = ki_obj(0, 1)
-    if pValua < alpha:
-        return False, pValua
-    else:
-        return True, pValua  # 0 表示A与Z不独立，Z为假，    1 表示A与Z独立，Z maybe为真
-
-
-def KCI(X, Y, Z, **params):
-    alpha = params.get('alpha', 10 / X.shape[0])
-    verbose = params.get('verbose', False)
-
-    if len(X.shape) == 1:
-        lens = len(X)
-        X = X.reshape(lens, 1)
-        Y = Y.reshape(lens, 1)
-        Z = Z.reshape(lens, 1)
-
-    data_CI = np.hstack((X, Y, Z))
-    if verbose: print(f'data_CI.shape:{data_CI.shape}')
-    ki_obj = CIT(data_CI, "kci", est_width='manual', kwidthx=1, kwidthy=0.5, kwidthz=0.5)  # 创建 CIT 实例
-    pValua = ki_obj(0, 1, [2])
-    if pValua < alpha:
-        return False, pValua
-    else:
-        return True, pValua  # 0 表示A与Z不独立，Z为假，    1 表示A与Z独立，Z maybe为真
 
 
 def cf(data, Z):

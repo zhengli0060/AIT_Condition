@@ -1,0 +1,75 @@
+# ## requires packages: pcalg, igraph, RGBL
+# library("rstudioapi")
+# 
+# # Source required R scripts
+# setwd(dirname(getActiveDocumentContext()$path))
+
+# 在调用的R脚本文件中添加以下行，以确保输出编码为UTF-8
+# Sys.setlocale("LC_CTYPE", "en_US.UTF-8")
+# source("lvida.R")
+source("E:/Local_covariate_select_all_project/lv_ida_master/lvida.R")
+# source("iscyclic.R")
+source("E:/Local_covariate_select_all_project/lv_ida_master/iscyclic.R")
+library("pcalg")
+library("igraph")
+library(R.utils)
+
+using_R_lv_ida <- function(data, X, Y, maxK = 6, alpha = 0.01) {
+  tryCatch({
+    # Calculate the sufficient statistics
+    suffStat <- list(C = cor(data), n = nrow(data))
+    
+    # Define the rules for the RFCI algorithm
+    # rules <- c(TRUE, TRUE, TRUE, TRUE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE)
+    rules <- c(TRUE, TRUE, TRUE, TRUE, FALSE, FALSE, FALSE, TRUE, TRUE, TRUE)
+    # Perform RFCI to estimate the causal structure
+    rfci_est <- rfci(suffStat, indepTest = gaussCItest, p = ncol(data), alpha = alpha, m.max = maxK, rules = rules)
+    rfci_est@amat[X,Y]=2
+    rfci_est@amat[Y,X]=3
+    # Check if the graph is cyclic
+    if (is.cyclic(rfci_est@amat)) {
+      cat("#### FOUND CYCLIC GRAPH #### \n LV-IDA won't work here! \n try again! \n")
+      return(c(beta = NULL, ci_num = NULL))
+    }
+    
+    # Estimate causal effects using LV-IDA
+    lv_ida_est <- lv.ida(X, Y, cov(data), rfci_est@amat, method="global",nMags=500, localcap=NULL,
+                         possdsep="big")
+    beta <- lv_ida_est
+    
+    return(c(beta = beta, ci_num = sum(rfci_est@n.edgetests)))
+  }, error = function(e) {
+    cat("Error:", e$message, "\n")
+    return(c(beta = NULL, ci_num = NULL))
+  })
+}
+
+# 创建一个带有超时设置的包装函数
+run_with_timeout <- function(func, timeout, ...) {
+  tryCatch({
+    result <- withTimeout({
+      func(...)
+    }, timeout = timeout, onTimeout = "error")
+    return(result)
+  }, TimeoutException = function(ex) {
+    cat("Function timed out\n")
+    return(c(beta =NULL, ci_num =NULL))
+  })
+}
+
+
+lv_ida_rfci <- function(data, X, Y, maxK = 6, alpha = 0.01) {
+  result <- run_with_timeout(using_R_lv_ida, 300, data, X, Y, maxK, alpha)
+  result
+  
+}
+# setwd("E:/Local_covariate_select_all_project/real_data")
+# # # Example usage:
+# data_path <- 'standardized_cattaneo2.csv'
+# data <- read.table(data_path, header = TRUE, sep = ",")
+# X <- 22
+# Y <- 23
+# alpha <- 0.01
+# 
+# result <- using_R_lv_ida(data, X, Y, alpha)
+# print(result)
