@@ -9,7 +9,7 @@ def AIT_condition():
     r('setwd("control_IV/controlfunctionIV-main/R")')
     for j in [1, 2]:
         Z = f'IV{j}'
-        A_Z = AIT_test(data, Z, relation='linear')   #
+        A_Z = AIT_test(data, Z, relation='linear')   # relation = 'linear' or 'nonlinear'
         if A_Z['IV_validity']: print(f'The candidate IV{j} is valid !!!')
         else: print(f'The candidate IV{j} is invalid !')
 
