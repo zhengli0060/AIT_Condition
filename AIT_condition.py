@@ -3,9 +3,7 @@ import pandas as pd
 import rpy2.robjects as robjects
 import os
 from rpy2.robjects import pandas2ri
-import statsmodels.api as sm
 import indTest.HSIC2 as fasthsic
-from sklearn.ensemble import RandomForestRegressor
 from rpy2.robjects import r
 import rpy2.robjects.packages as rpackages
 from sklearn.linear_model import LinearRegression
@@ -89,7 +87,6 @@ def linear_get_A_with_W(df, Z):
 
 
     return A, residual_Z.reshape(-1, 1)
-
 
 
 def cf_no_W(data, Z):
