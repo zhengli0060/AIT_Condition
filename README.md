@@ -39,5 +39,6 @@ where `IVs` are candidate IVs and `Ws` are covariates.
 > To check the statistical independence of `A` and `Z`, we employ the large-scale HSIC test proposed by Zhang et al. (2018).  
 > - Zhang Q, Filippi S, Gretton A, et al. Large-scale kernel methods for independence testing[J]. *Statistics and Computing*, 2018, 28: 113-130.
 
-## CITATION
-If you use this code, please cite the following paper:xxx
+## Citation
+If you use this code, please cite the following paper:
+  Testability of Instrumental Variables in Additive Nonlinear, Non-Constant Effects Models
