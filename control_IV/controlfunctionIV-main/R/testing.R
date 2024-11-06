@@ -1,19 +1,8 @@
-# source("E:\\Data\\condition function_guo\\controlfunctionIV-main\\R")
-# 设置文件夹路径
-folder_path <- "E:\\testability_IV_JMLR\\control_IV\\controlfunctionIV-main\\R"
-
-# 获取文件夹中所有R脚本的文件名
 file_list <- list.files(path = folder_path, pattern = "\\.R$", full.names = TRUE)
-
-# 使用lapply函数逐个调用这些文件
 lapply(file_list, source)
-
-# install.packages("readxl")
 library(readxl)
-# install.packages("Formula") # 如果尚未安装Formula包
-library(Formula) # 加载Formula包
-# 读取指定工作表
-# data <- read_excel("E:\\percentage_dead_patience.xlsx", sheet = "Sheet4")
+library(Formula)
+
 
 # data("nonlineardata")
 # Y <- log(nonlineardata[,"insulin"])
@@ -32,10 +21,7 @@ summary(cf.model)
 coef <- cf.model$coefficients
 A <- Y - coef[2]*D - coef[3]*I(D^2) - coef[4]*X
 T_A <- scale(data[,"A"])
-# 计算 MSE
 mse <- mean((A - T_A)^2)
-
-# 输出 MSE
 print(mse)
 
 

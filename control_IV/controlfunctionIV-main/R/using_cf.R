@@ -1,16 +1,5 @@
-# library("rstudioapi")
-#
-# # Source required R scripts
-# setwd(dirname(getActiveDocumentContext()$path))
-# folder_path = dirname(getActiveDocumentContext()$path)
-# # 获取文件夹中所有R脚本的文件名
-# file_list <- list.files(path = folder_path, pattern = "\\.R$", full.names = TRUE)
-
-# lapply(file_list, source)
 library(readxl)
-library(Formula) # 加载Formula包
-# source("E:\\testability_IV_JMLR\\control_IV\\controlfunctionIV-main\\R\\pretest.R")
-# source("E:\\testability_IV_JMLR\\control_IV\\controlfunctionIV-main\\R\\cf.R")
+library(Formula)
 # source("pretest.R")
 # source("cf.R")
 using_R_cf_with_W <- function(data, Z.id) {
@@ -36,17 +25,3 @@ using_R_cf_no_W <- function(data, Z.id) {
   A <- Y - coef[2]*D - coef[3]*I(D^2) - coef[4]*I(D^3) - coef[5]*I(D^4)
 
 }
-
-# # # # # Example usage:
-# setwd("E:\\testability_IV_JMLR\\control_IV\\controlfunctionIV-main\\R")
-# data_path <- 'T_5000_0.csv'
-# data <- read.table(data_path, header = TRUE, sep = ",")
-# Z.id <- "IV2"
-# A <- using_R_cf(data, Z.id)
-# # print(A)
-# T_A <- scale(data[,"A"])
-# # 计算 MSE
-# mse <- mean((A - T_A)^2)
-#
-# # 输出 MSE
-# print(mse)
