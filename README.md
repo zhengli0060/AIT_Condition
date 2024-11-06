@@ -40,4 +40,4 @@ where `IVs` are candidate IVs and `Ws` are covariates.
 > - Zhang Q, Filippi S, Gretton A, et al. Large-scale kernel methods for independence testing[J]. *Statistics and Computing*, 2018, 28: 113-130.
 
 ## CITATION
-If you use this code, please cite the following paper:
+If you use this code, please cite the following paper:xxx
