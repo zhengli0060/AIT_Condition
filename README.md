@@ -22,7 +22,8 @@ where `IVs` are candidate IVs and `Ws` are covariates.
 
 **Output:**
 - The result of the A and Z independence test, datatype: dict.
-`Note: ` 
+
+***Note:***
 
 
 ## Requirements
