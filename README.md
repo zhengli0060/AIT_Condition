@@ -24,8 +24,8 @@ where `IVs` are candidate IVs and `Ws` are covariates.
 - The result of the A and Z independence test, datatype: dict.
 
 ***Note:***
-
-
+- If A and Z are independent, it implies that we cannot reject Z as a valid IV.
+- If A and Z are dependent, it implies that Z is an invalid IV.
 ## Requirements
 - Python 3.9.13  
 - R 4.2.3  
