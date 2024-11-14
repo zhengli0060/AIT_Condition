@@ -1,10 +1,10 @@
-# Testability of Instrumental Variables in Additive Nonlinear, Non-Constant Effects Models
+# ✨ Testability of Instrumental Variables in Additive Nonlinear, Non-Constant Effects Models
 This is the code repository for the auxiliary-based independence test (AIT) condition, used to test whether a variable is a valid instrument.
 
 ## Examples
 We provide several examples of running the AIT condition in `example.py`.
 
-## Main Function: `AIT_condition.py`
+## 🤖 Main Function: `AIT_condition.py`
 Auxiliary-based Independence Test (AIT) Condition
 
 **Input:**
@@ -26,7 +26,7 @@ where `IVs` are candidate IVs and `Ws` are covariates.
 ***Note:***
 - If A and Z are independent, it implies that we cannot reject Z as a valid IV.
 - If A and Z are dependent, it implies that Z is an invalid IV.
-## Requirements
+## 🛠️ Requirements
 - Python 3.9.13  
 - R 4.2.3  
 - rpy2 3.5.16  
