@@ -7,7 +7,7 @@ import indTest.HSIC2 as fasthsic
 from rpy2.robjects import r
 import rpy2.robjects.packages as rpackages
 from sklearn.linear_model import LinearRegression
-
+from sklearn.ensemble import RandomForestRegressor
 def AIT_test(data, Z, **params):
     alpha = params.get('alpha', 10 / data.shape[0])
     verbose = params.get('verbose', False)
@@ -23,7 +23,7 @@ def AIT_test(data, Z, **params):
         if relation == 'linear':
             A, Z_data = linear_get_A_with_W(data, Z)
         else:
-            raise ValueError ('No such method')
+            A, Z_data = cf_with_W(data, Z)
     else:
         if verbose: print("There are no covariates.")
         if relation == 'linear':
@@ -57,12 +57,12 @@ def linear_get_A(df, Z):
     return A
 
 
-def linear_get_A_with_W(df, Z):
+def linear_get_A_with_W(data, Z):
 
-    X_data = df['Treatment'].values.reshape(-1, 1)
-    Y_data = df['Outcome'].values.reshape(-1, 1)
-    Z_data = df[Z].values.reshape(-1, 1)
-    W_data = df.filter(like='W').values
+    X_data = data['Treatment'].values.reshape(-1, 1)
+    Y_data = data['Outcome'].values.reshape(-1, 1)
+    Z_data = data[Z].values.reshape(-1, 1)
+    W_data = data.filter(like='W').values
 
     # Linear regression
     model_YW = LinearRegression().fit(W_data, Y_data)
@@ -110,22 +110,37 @@ def cf_no_W(data, Z):
     return A, Z_data
 
 
-# def cf_with_W(data, Z):
-#
-#     if not rpackages.isinstalled('readxl'):
-#         rpackages.importr('readxl')
-#     if not rpackages.isinstalled('Formula'):
-#         rpackages.importr('Formula')
-#     # path = os.path.join('control_IV/controlfunctionIV-main/R/using_cf.R')
-#     robjects.r.source('pretest.R')
-#     robjects.r.source('cf.R')
-#     path = os.path.join('using_cf.R')
-#     robjects.r.source(path)
-#     pandas2ri.activate()
-#     r_dataframe = pandas2ri.py2rpy(data)
-#     result = robjects.r.using_R_cf_with_W(r_dataframe, Z)
-#
-#     A = np.array(result).reshape(-1, 1)
-#     Z_data = data[Z].values.reshape(-1, 1)
-#     W_data = data['W'].values.reshape(-1, 1)
-#     return A, Z_data, W_data
+def cf_with_W(data, Z):
+
+    if not rpackages.isinstalled('readxl'):
+        rpackages.importr('readxl')
+    if not rpackages.isinstalled('Formula'):
+        rpackages.importr('Formula')
+    # path = os.path.join('control_IV/controlfunctionIV-main/R/using_cf.R')
+    robjects.r.source('pretest.R')
+    robjects.r.source('cf.R')
+    path = os.path.join('using_cf.R')
+    robjects.r.source(path)
+    pandas2ri.activate()
+
+    r_dataframe = pandas2ri.py2rpy(data)
+    result = robjects.r.using_R_cf_with_W(r_dataframe, Z)
+
+    A = np.array(result).reshape(-1, 1)
+    W_data = data.filter(like='W')
+    residual_Z = random_forest_residuals(data[Z], W_data)
+    return A, residual_Z.reshape(-1, 1)
+
+
+def random_forest_residuals(Z_data, Ws_data):
+
+    combined_data = pd.concat([Z_data, Ws_data], axis=1).dropna()
+    dependent_var_clean = combined_data.iloc[:, 0]
+    independent_vars_clean = combined_data.iloc[:, 1:]
+
+    model = RandomForestRegressor(n_estimators=100)
+    model.fit(independent_vars_clean, dependent_var_clean.values.ravel())
+    residuals = dependent_var_clean.values.ravel() - model.predict(independent_vars_clean)
+    return residuals
+
+
