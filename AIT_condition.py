@@ -11,7 +11,7 @@ from sklearn.ensemble import RandomForestRegressor
 def AIT_test(data, Z, **params):
     alpha = params.get('alpha', 10 / data.shape[0])
     verbose = params.get('verbose', False)
-    relation = params.get('relation', 'linear')
+    relation = params.get('relation', 'nonlinear')
 
     indexs = list(data.columns)
     if 'Treatment' not in indexs or 'Outcome' not in indexs:
