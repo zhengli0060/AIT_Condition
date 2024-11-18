@@ -10,7 +10,7 @@ Auxiliary-based Independence Test (AIT) Condition
 **Input:**
 - **Data:** A set of observed variables, datatype: DataFrame. For example:
 
-| Treatment | Outcome | IV1 | ... | IV_n | W_1 | ... | W_n |  
+| Treatment | Outcome | IV1 | ... | IVn | W1 | ... | Wn |  
 |-----------|---------|-----|-----|------|-----|-----|-----|  
 | ***       | ***     | *** | *** | ***  | *** | *** | *** |  
 | ***       | ***     | *** | *** | ***  | *** | *** | *** |
