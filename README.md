@@ -45,6 +45,9 @@ where `IVs` are candidate IVs and `Ws` are covariates.
 ## 📝 Citation
 If you use this code, please cite the following paper:
 
-    Testability of Instrumental Variables in Additive Nonlinear, Non-Constant Effects Models.
-    Xichen Guo, Zheng Li, Biwei Huang, Yan Zeng, Zhi Geng, Feng Xie.
-    arXiv:2411.12184, 2024.
+    @article{guo2024testability,
+  title={Testability of Instrumental Variables in Additive Nonlinear, Non-Constant Effects Models},
+  author={Guo, Xichen and Li, Zheng and Huang, Biwei and Zeng, Yan and Geng, Zhi and Xie, Feng},
+  journal={arXiv preprint arXiv:2411.12184},
+  year={2024}
+}
