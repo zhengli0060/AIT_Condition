@@ -1,8 +1,5 @@
 import numpy as np
 import pandas as pd
-import rpy2.robjects as robjects
-import os
-from rpy2.robjects import pandas2ri
 import indTest.HSIC2 as fasthsic
 from rpy2.robjects import r
 import rpy2.robjects.packages as rpackages
@@ -88,45 +85,35 @@ def linear_get_A_with_W(data, Z):
 
     return A, residual_Z.reshape(-1, 1)
 
+from control_IV import controlfunctionIV_py
 
 def cf_no_W(data, Z):
 
-    if not rpackages.isinstalled('readxl'):
-        rpackages.importr('readxl')
-    if not rpackages.isinstalled('Formula'):
-        rpackages.importr('Formula')
-    # path = os.path.join('control_IV/controlfunctionIV-main/R/using_cf.R')
-    robjects.r.source('pretest.R')
-    robjects.r.source('cf.R')
-    path = os.path.join('using_cf.R')
-    robjects.r.source(path)
-    pandas2ri.activate()
+    A = controlfunctionIV_py(
+        data=data,
+        outcome="Outcome",
+        treatment="Treatment",
+        instruments=[Z],
+        covariates=None
+    )
+   
 
-    r_dataframe = pandas2ri.py2rpy(data)
-    result = robjects.r.using_R_cf_no_W(r_dataframe, Z)
-
-    A = np.array(result).reshape(-1, 1)
+    A = A.reshape(-1, 1)
     Z_data = data[Z].values.reshape(-1, 1)
     return A, Z_data
 
 
 def cf_with_W(data, Z):
 
-    if not rpackages.isinstalled('readxl'):
-        rpackages.importr('readxl')
-    if not rpackages.isinstalled('Formula'):
-        rpackages.importr('Formula')
-    # path = os.path.join('control_IV/controlfunctionIV-main/R/using_cf.R')
-    robjects.r.source('pretest.R')
-    robjects.r.source('cf.R')
-    path = os.path.join('using_cf.R')
-    robjects.r.source(path)
-    pandas2ri.activate()
+    A = controlfunctionIV_py(
+        data=data,
+        outcome="Outcome",
+        treatment="Treatment",
+        instruments=[Z],
+        covariates=data.filter(like='W').columns.tolist()
+    )
 
-    r_dataframe = pandas2ri.py2rpy(data)
-    result = robjects.r.using_R_cf_with_W(r_dataframe, Z)
-
-    A = np.array(result).reshape(-1, 1)
+    A = A.reshape(-1, 1)
     W_data = data.filter(like='W')
     residual_Z = random_forest_residuals(data[Z], W_data)
     return A, residual_Z.reshape(-1, 1)
