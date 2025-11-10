@@ -34,7 +34,7 @@ where `IVs` are candidate IVs and `Ws` are covariates.
 - scikit-learn 1.5.2  
 - numpy 1.22.4  
 - pandas 2.2.3  
-
+- R package:[`controlfunctionIV`](https://github.com/zijguo/controlfunctionIV)
 ## 🗒️ Notes
 > We adopt the control function IV estimator proposed by Guo and Small (2016) for Additive Non-Parametric IV Models, which is a two-stage approach.  
 > - Guo Z, Small D. S. Control function instrumental variable estimation of nonlinear causal effect models[J]. *Journal of Machine Learning Research*, 2016, 17(100): 1-35.
