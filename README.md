@@ -30,7 +30,7 @@ where `IVs` are candidate IVs and `Ws` are covariates.
 - Python 3.9.13  
 - R 4.2.3  
 - rpy2 3.5.16  
-- kerpy 0.1.0  
+- [kerpy 0.1.0](https://github.com/oxcsml/kerpy)  
 - scikit-learn 1.5.2  
 - numpy 1.22.4  
 - pandas 2.2.3  
